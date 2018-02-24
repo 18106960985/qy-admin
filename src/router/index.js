@@ -18,7 +18,7 @@ import Layout from '../views/layout/Layout'
  //当设置 true 的时候永远会显示根菜单，不设置的情况下只有当子路由个数大于一个时才会显示根菜单
  //当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式。只有一个时会将那个子路由当做根路由
  alwaysShow: true
-
+    下面这些写了也没用，数据都是从后端获取并改写的
    name:'router-name'            //设定路由的名字，一定要填写不然 使用 <keep-alive> 时会出现各种问题
    meta : {
     roles: ['admin','editor']   //设置该路由进入的权限，支持多个权限叠加 没有用到前端角色控制权限
@@ -130,17 +130,27 @@ export default new Router({
  * @type {*[]}
  */
 export const asyncRouterMap = [
-
   {
     path: '/baseManager',
     component: Layout,
     authority: 'baseManager',
-    children: [{
-      path: 'userManager',
-      component: _import('svg-icons/index'),
-      authority: 'userManager',
-      meta: { title: 'icons', icon: 'icon', noCache: true }
-    }]
+    redirect: 'noredirect',//不重定向
+    alwaysShow: true,//根菜单是否显示
+    name: 'form',
+    meta: {
+      title: 'form',
+      icon: 'form'
+    },
+    children: [
+      { path: 'userManager',
+        component: _import('admin/user/user'),
+        authority: 'userManager',
+        name: 'createForm',
+        meta: { title: 'createForm', icon: 'table'
+      }}
+    ]
   },
+
+
   { path: '*', redirect: '/404', hidden: true }
 ]
