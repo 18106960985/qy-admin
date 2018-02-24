@@ -1,0 +1,146 @@
+import Vue from 'vue'
+import Router from 'vue-router'
+const _import = require('./_import_' + process.env.NODE_ENV)
+// in development-env not use lazy-loading, because lazy-loading too many pages will cause webpack hot update too slow. so only in production use lazy-loading;
+// detail: https://panjiachen.github.io/vue-element-admin-site/#/lazy-loading
+
+Vue.use(Router)
+
+/* Layout */
+import Layout from '../views/layout/Layout'
+/**
+ * //当设置 true 的时候该路由不会再侧边栏出现 如401，login等页面(默认 false)
+ hidden: true
+
+ //当设置 noredirect 的时候该路由不会在面包屑导航中出现
+ redirect: noredirect
+
+ //当设置 true 的时候永远会显示根菜单，不设置的情况下只有当子路由个数大于一个时才会显示根菜单
+ //当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式。只有一个时会将那个子路由当做根路由
+ alwaysShow: true
+
+   name:'router-name'            //设定路由的名字，一定要填写不然 使用 <keep-alive> 时会出现各种问题
+   meta : {
+    roles: ['admin','editor']   //设置该路由进入的权限，支持多个权限叠加 没有用到前端角色控制权限
+    title: 'title'              //设置该路由在侧边栏和面包屑中展示的名字
+    icon: 'svg-name'            //设置该路由的图标
+    noCache: true               //如果设置为true ,则不会被 <keep-alive> 缓存(默认 false)
+  }
+ */
+
+
+/**
+ * 白名单通用路由
+ * @type {*[]}
+ */
+export const constantRouterMap = [
+  { path: '/login', component: _import('login/index'), hidden: true },
+  { path: '/authredirect', component: _import('login/authredirect'), hidden: true },
+  { path: '/404', component: _import('errorPage/404'), hidden: true },
+  { path: '/401', component: _import('errorPage/401'), hidden: true },
+  {
+    path: '',
+    component: Layout,
+    redirect: 'dashboard',
+    children: [{
+      path: 'dashboard',
+      component: _import('dashboard/index'),
+      name: 'dashboard',
+      meta:{ title:'dashboard', icon: 'dashboard', onChange:true}
+    }]
+  },
+  {
+    path: '/documentation',
+    component: Layout,
+    redirect: '/documentation/index',
+    children: [{
+      path: 'index',
+      component: _import('documentation/index'),
+      name: 'documentation',
+      meta: { title: 'documentation', icon: 'documentation', noCache: true }
+    }]
+  }
+]
+
+export default new Router({
+  // mode: 'history', // require service support
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRouterMap
+})
+//
+// export const asyncRouterMap = [{
+//   path: '/baseManager',
+//   component: Layout,
+//   name: '基础配置管理',
+//   icon: 'setting',
+//   authority: 'baseManager',
+//   children: [{
+//     path: 'userManager',
+//     icon: 'fa-user',
+//     component: _import('admin/user/index'),
+//     name: '用户管理',
+//     authority: 'userManager'
+//   }, {
+//     path: 'menuManager',
+//     icon: 'category',
+//     component: _import('admin/menu/index'),
+//     name: '菜单管理',
+//     authority: 'menuManager'
+//   }, {
+//     path: 'groupManager',
+//     icon: 'group_fill',
+//     component: _import('admin/group/index'),
+//     name: '角色权限管理',
+//     authority: 'groupManager'
+//   }, {
+//     path: 'groupTypeManager',
+//     icon: 'fa-users',
+//     component: _import('admin/groupType/index'),
+//     name: '角色类型管理',
+//     authority: 'groupTypeManager'
+//   }, {
+//     path: 'gateLogManager',
+//     icon: 'viewlist',
+//     component: _import('admin/gateLog/index'),
+//     name: '操作日志管理',
+//     authority: 'gateLogManager'
+//   }]
+// }, {
+//   path: '/monitorManager',
+//   component: Layout,
+//   name: '监控模块管理',
+//   icon: 'setting',
+//   authority: 'monitorManager',
+//   children: [{
+//     path: 'serviceEurekaManager',
+//     component: _import('monitor/eureka/index'),
+//     name: 'Eureka注册中心',
+//     authority: 'serviceEurekaManager'
+//   }, {
+//     path: 'serviceMonitorManager',
+//     component: _import('monitor/service/index'),
+//     name: '服务状态监控',
+//     authority: 'serviceMonitorManager'
+//   }]
+// }];
+
+
+/**
+ * 权限路由，由后台传输进行匹配
+ * @type {*[]}
+ */
+export const asyncRouterMap = [
+
+  {
+    path: '/baseManager',
+    component: Layout,
+    authority: 'baseManager',
+    children: [{
+      path: 'userManager',
+      component: _import('svg-icons/index'),
+      authority: 'userManager',
+      meta: { title: 'icons', icon: 'icon', noCache: true }
+    }]
+  },
+  { path: '*', redirect: '/404', hidden: true }
+]
