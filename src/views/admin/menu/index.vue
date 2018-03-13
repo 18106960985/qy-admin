@@ -17,19 +17,17 @@
                 <!--<el-button  type="primary">根</el-button>-->
               <!--</el-tooltip>-->
               <el-tooltip effect="light" placement="top" content="添加菜单项">
-                <el-button  type="primary">添加</el-button>
+                <el-button  type="primary" @click="info.edit = false , info.status='create'">添加</el-button>
               </el-tooltip>
               <el-tooltip effect="light" placement="top" content="编辑菜单项">
-                <el-button  type="success" @click="info.formStatus = false">编辑</el-button>
+                <el-button  type="success" @click="info.edit = false , info.status='update'">编辑</el-button>
               </el-tooltip>
               <el-tooltip effect="light" placement="top" content="删除菜单项">
-                <el-button  type="danger">删除</el-button>
+                <el-button  type="danger"  @click="handleDelete">删除</el-button>
               </el-tooltip>
             </el-button-group>
           </div>
         </div>
-
-
             <!--菜单树-->
             <el-tree
               :data="treeData"
@@ -53,7 +51,7 @@
         <el-tabs v-model="activeTab"  @tab-click="handleClick" type="border-card" >
           <el-tab-pane label="菜单详情" name="info">
             <keep-alive>
-            <menu-info   v-if="activeTab=='info'"  :formStatus="info.formStatus" :currentMenuId="info.currentMenuId" :parentName="info.parentName" ref="menuInfo"></menu-info>
+            <menu-info   v-if="activeTab=='info'"  :form="info"   @changEvent="infoChange" ref="menuInfo"></menu-info>
            </keep-alive>
 
           </el-tab-pane>
@@ -71,6 +69,9 @@
 <script>
     import {
       fetchTree
+    } from '../../../api/admin/menu/index';
+    import {
+      delObj
     } from '../../../api/admin/menu/index';
     import { mapGetters } from 'vuex';
 
@@ -99,7 +100,8 @@
           info:{
             currentMenuId:-1,//当前菜单
             parentName:"根菜单",
-            formStatus:true,
+            edit:true,
+            status:'',//表单状态
           },
           loading:{
             treeLoading:false,
@@ -135,28 +137,48 @@
           return data.label.indexOf(value) !== -1;
         },
         getNodeData(data,node) {
-          // if (!this.formEdit) {
-          //   this.formStatus = 'update';
-          // }
-
-
-          this.info.formStatus = true;//锁住编辑
+          this.info.edit = true;//锁住编辑
+          this.info.status = '';
           // this.showElement = true;
           //子组件初始化
           this.info.currentMenuId = data.id;
           this.info.parentName =  node.parent.label != undefined ? node.parent.label :'Root';
 
         },
+        infoChange(){
+          this.getTree();
+        },
         handleClick(tab, event) {
           // console.log(tab, event);
         },
-        resetForm(formName) {
-          let temp =this.$refs[formName]
-          console.log(temp )
-          console.log(temp.resetFields())
-          // this.menuForm.parentId = this.currentMenuId;
-          // this.menuForm.parentName = this.parentName;
-        }
+        handleDelete() {
+          this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            delObj(this.info.currentMenuId).then(res => {
+              if(res.rel){
+                this.$notify({
+                  title: '成功',
+                  message: '删除成功',
+                  type: 'success',
+                  duration: 2000
+                });
+              }else {
+
+              }
+              this.onCancel();
+              this.getTree();
+
+            });
+          });
+        },
+        onCancel() {
+          this.info.edit = true;
+          this.info.status = '';
+          this.$refs.menuInfo.$refs['menuForm'].resetFields();
+        },
       }
     }
 </script>
