@@ -3,10 +3,10 @@
     <!--搜索工具栏-->
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="姓名或账户" v-model="searchForNameOrAccount" />
-      <el-select clearable class="filter-item" style="width: 130px" v-model="searchForSex" placeholder="性别">
-        <el-option v-for="item in  sexOptions" :key="item" :label="item" :value="item">
-        </el-option>
-      </el-select>
+      <!--<el-select clearable class="filter-item" style="width: 130px" v-model="searchForSex" placeholder="性别">-->
+        <!--<el-option v-for="item in  sexOptions" :key="item" :label="item" :value="item">-->
+        <!--</el-option>-->
+      <!--</el-select>-->
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('table.add')}}</el-button>
       <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('table.export')}}</el-button>
@@ -19,42 +19,42 @@
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
               style="width: 100%">
       <el-table-column align="center" label="序号" width="65">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="姓名">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
       <el-table-column width="110" align="center" label="账户">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span>{{scope.row.account}}</span>
         </template>
       </el-table-column>
       <el-table-column width="110" align="center" label="性别">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span>{{scope.row.sex}}</span>
         </template>
       </el-table-column>
       <el-table-column v-if="showDesciption" width="300" align="center" label="备注">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span>{{scope.row.description}}</span>
         </template>
       </el-table-column>
       <el-table-column v-if="showUpdTime" width="180"  align="center" label="最后时间">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span>{{scope.row.updTime}}</span>
         </template>
       </el-table-column>
       <el-table-column v-if="showUpdName" width="200" align="center" label="最后更新人">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span>{{scope.row.updName}}</span>
         </template>
       </el-table-column>
       <el-table-column fixed="right" align="center" label="操作" width="250">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-button v-if="userManager_btn_edit" size="small" type="success" @click="handleUpdate(scope.row)">编辑
           </el-button>
           <el-button v-if="userManager_btn_del" size="small" type="danger" @click="handleDelete(scope.row)">删除
@@ -111,8 +111,6 @@
   import waves from '@/directive/waves' // 水波纹指令
   import { parseTime } from '@/utils'
   import { mapGetters } from 'vuex';
-
-
 
   export default {
     name: 'user',

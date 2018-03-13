@@ -143,11 +143,17 @@ export const asyncRouterMap = [
     },
     children: [
       { path: 'userManager',
-        component: _import('admin/user/user'),
+        component: _import('admin/user/index'),
         authority: 'userManager',
-        name: 'createForm',
+        name: '用户管理',
         meta: { title: 'createForm', icon: 'table'
-      }}
+      }},
+      { path: 'menuManager',
+        component: _import('admin/menu/index'),
+        authority: 'menuManager',
+        name: '菜单管理',
+        meta: { title: 'createForm', icon: 'table'
+        }}
     ]
   },
 
