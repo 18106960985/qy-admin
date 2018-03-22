@@ -2,22 +2,18 @@
   <div class="app-container calendar-list-container">
     <!--搜索工具栏-->
     <div class="filter-container">
-      <el-input :model="filters" @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="姓名或账户" />
-      <!--<el-select clearable class="filter-item" style="width: 130px" v-model="searchForSex" placeholder="性别">-->
-      <!--<el-option v-for="item in  sexOptions" :key="item" :label="item" :value="item">-->
-      <!--</el-option>-->
-      <!--</el-select>-->
-      <!--<el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>-->
-      <!--<el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('table.add')}}</el-button>-->
-      <!--<el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('table.export')}}</el-button>-->
-      <!--<el-checkbox class="filter-item" style='margin-left:15px;' @change='tableKey=tableKey+1' v-model="showDesciption">备注</el-checkbox>-->
-      <!--<el-checkbox class="filter-item" style='margin-left:15px;' @change='tableKey=tableKey+2' v-model="showUpdTime">更新时间</el-checkbox>-->
-      <!--<el-checkbox class="filter-item" style='margin-left:15px;' @change='tableKey=tableKey+3' v-model="showUpdName">更新人</el-checkbox>-->
+      <el-input :model="filters" @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="资源名称" />
+      <el-tooltip placement="top" content="资源查询">
+        <el-button class="filter-item" type="primary"  icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>
+      </el-tooltip>
+      <el-tooltip placement="top" content="创建新组件资源">
+        <el-button v-if="authority.menuManager_btn_element_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('table.add')}}</el-button>
+      </el-tooltip>
+      <el-checkbox class="filter-item" style='margin-left:15px;' @change='tableKey=tableKey+1' v-model="show.description">备注</el-checkbox>
     </div>
     <!--表格开始-->
-
-    <el-table :data="table" v-loading="tableLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-              style="width: 100%">
+    <el-table :data="table" v-loading="loading.tableLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+              style="width: 100%" :key='tableKey' >
       <el-table-column align="center" label="资源编码" width="200px">
         <template slot-scope="scope">
           <span>{{scope.row.code}}</span>
@@ -43,7 +39,7 @@
           <span>{{scope.row.method}}</span>
         </template>
       </el-table-column>
-      <el-table-column  width="200px"  align="center" label="描述">
+      <el-table-column v-if="show.description"  width="200px"  align="center" label="描述">
         <template slot-scope="scope">
           <span>{{scope.row.description}}</span>
         </template>
@@ -51,20 +47,22 @@
 
       <el-table-column fixed="right" align="center" label="操作" width="150">
         <template slot-scope="scope">
-          <!--<el-button v-if="userManager_btn_edit" size="small" type="success" @click="handleUpdate(scope.row)">编辑-->
-          <!--</el-button>-->
-          <!--<el-button v-if="userManager_btn_del" size="small" type="danger" @click="handleDelete(scope.row)">删除-->
-          <!--</el-button>-->
+          <el-button v-if="authority.menuManager_btn_element_edit" size="small" type="success" @click="handleUpdate(scope.row)">编辑
+          </el-button>
+          <el-button v-if="authority.menuManager_btn_element_del" size="small" type="danger" @click="handleDelete(scope.row)">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!--分页-->
-    <!--<div v-show="!listLoading" class="pagination-container">-->
-      <!--<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>-->
+    <!--<div v-show="!loading.tableLoading" class="pagination-container">-->
+      <!--<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="tableQuery.page" :page-sizes="[10,20,30, 50]" :page-size="tableQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>-->
     <!--</div>-->
+    <element-form :dialog.sync="dialog" :currentMenuId="currentMenuId" ref="Form" @change="getTable"></element-form>
     </div>
   <!--</div>-->
+
 </template>
 
 <script>
@@ -76,9 +74,13 @@
     putObj
   } from '../../../../api/admin/element/index';
   import { mapGetters } from 'vuex';
+  import elementForm from './elementForm'
 
     export default {
         name: "index",
+      components:{
+        elementForm
+      },
       props:{
             currentMenuId:{
               type: Number,
@@ -90,13 +92,30 @@
             filters:undefined,
             menuId:-1,
             table:null,
+            tableKey:0,
             tableQuery:{
               page: 1,
               limit: 20,
               name: undefined,
               menuId: this.menuId
             },
-            tableLoading:false,
+            show:{
+              description:false,
+
+            },
+            loading:{
+              tableLoading:false,
+              // pageLoading: false,
+            },
+            dialog:{
+              dialogStatus:'create',
+              dialogFormVisible: false,
+            },
+            authority:{//权限
+              menuManager_btn_element_add: false,
+              menuManager_btn_element_edit: false,
+              menuManager_btn_element_del: false,
+            }
           }
       },
       watch:{
@@ -107,18 +126,73 @@
       },
       created(){
         this.getTable();
+        if(this.elements){
+          this.authority.menuManager_btn_element_add = this.elements['menuManager:btn_element_add'];
+          this.authority.menuManager_btn_element_del = this.elements['menuManager:btn_element_del'];
+          this.authority.menuManager_btn_element_edit = this.elements['menuManager:btn_element_edit'];
+        }
 
       },
+      computed:{
+        ...mapGetters([
+          'elements'
+        ])
+      },
       methods: {
-          getTable(){
-            this.tableLoading = true ;
-            this.tableQuery.menuId = this.currentMenuId;
-            page(this.tableQuery).then(res =>{
-              this.table =res.data.rows;
-              this.tableLoading = false;
-            })
+        getTable(){
+          this.loading.tableLoading = true ;
+          this.tableQuery.menuId = this.currentMenuId;
+          page(this.tableQuery).then(res =>{
+            this.table =res.data.rows;
+            this.loading.tableLoading = false ;
+          })
+        },
+        handleFilter(){//查询过滤
 
-          }
+        },
+        handleCreate(){//创建
+          this.dialog.dialogStatus = 'create';
+          this.dialog.dialogFormVisible = true;
+
+        },
+        handleUpdate(row){
+          this.$refs.Form.form = row;
+          this.dialog.dialogStatus = 'update';
+          this.dialog.dialogFormVisible = true;
+        },
+        handleDelete(row){
+          this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.loading.tableLoading = true ;
+            delObj(row.id).then(res => {
+              if (res.rel){
+                this.$notify({
+                  title: '成功',
+                  message: '删除成功',
+                  type: 'success',
+                  duration: 2000
+                });
+                let index = this.table.indexOf(row);
+                this.table.splice(index, 1);
+              }else{
+                this.$notify({
+                  title: '失败',
+                  message: res.message,
+                  type: 'error',
+                  duration: 2000
+                });
+              }
+              this.loading.tableLoading = false ;
+
+
+            });
+          });
+        }
+      },
+      mounted(){
       }
     }
 </script>

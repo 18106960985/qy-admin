@@ -20,7 +20,7 @@
                 <el-button  type="primary" @click="info.edit = false , info.status='create'">添加</el-button>
               </el-tooltip>
               <el-tooltip effect="light" placement="top" content="编辑菜单项">
-                <el-button  type="success" @click="info.edit = false , info.status='update'">编辑</el-button>
+                <el-button  type="success" @click="info.edit = false , info.status='update' , activeTab=='info' ">编辑</el-button>
               </el-tooltip>
               <el-tooltip effect="light" placement="top" content="删除菜单项">
                 <el-button  type="danger"  @click="handleDelete">删除</el-button>
