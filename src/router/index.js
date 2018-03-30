@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 const _import = require('./_import_' + process.env.NODE_ENV)
-// in development-env not use lazy-loading, because lazy-loading too many pages will cause webpack hot update too slow. so only in production use lazy-loading;
-// detail: https://panjiachen.github.io/vue-element-admin-site/#/lazy-loading
+//在development-env中不使用延迟加载，因为延迟加载太多页面会导致webpack热更新太慢。 所以只有在生产中使用延迟加载;
+//详细信息
 
 Vue.use(Router)
 

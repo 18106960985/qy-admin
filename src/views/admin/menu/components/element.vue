@@ -2,7 +2,7 @@
   <div class="app-container calendar-list-container">
     <!--搜索工具栏-->
     <div class="filter-container">
-      <el-input :model="filters" @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="资源名称" />
+      <el-input v-model="filters" @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="资源名称" />
       <el-tooltip placement="top" content="资源查询">
         <el-button class="filter-item" type="primary"  icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>
       </el-tooltip>
@@ -29,14 +29,14 @@
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="资源地址">
-        <template slot-scope="scope">
-          <span>{{scope.row.url}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column  width="200px" align="center" label="资源请求类型">
+      <el-table-column  width="200px" align="center" label="请求类型">
         <template slot-scope="scope">
           <span>{{scope.row.method}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="200px" align="center" label="请求地址">
+        <template slot-scope="scope">
+          <span>{{scope.row.url}}</span>
         </template>
       </el-table-column>
       <el-table-column v-if="show.description"  width="200px"  align="center" label="描述">
@@ -54,11 +54,11 @@
         </template>
       </el-table-column>
     </el-table>
-
     <!--分页-->
-    <!--<div v-show="!loading.tableLoading" class="pagination-container">-->
-      <!--<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="tableQuery.page" :page-sizes="[10,20,30, 50]" :page-size="tableQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>-->
-    <!--</div>-->
+    <div v-show="!loading.tableLoading" class="pagination-container">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="tableQuery.page" :page-sizes="[10,20,30, 50]" :page-size="tableQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>
+    </div>
+
     <element-form :dialog.sync="dialog" :currentMenuId="currentMenuId" ref="Form" @change="getTable"></element-form>
     </div>
   <!--</div>-->
@@ -92,6 +92,7 @@
             filters:undefined,
             menuId:-1,
             table:null,
+            total: null,
             tableKey:0,
             tableQuery:{
               page: 1,
@@ -122,7 +123,6 @@
           currentMenuId :function () {
             this.getTable();
           }
-
       },
       created(){
         this.getTable();
@@ -131,7 +131,6 @@
           this.authority.menuManager_btn_element_del = this.elements['menuManager:btn_element_del'];
           this.authority.menuManager_btn_element_edit = this.elements['menuManager:btn_element_edit'];
         }
-
       },
       computed:{
         ...mapGetters([
@@ -148,7 +147,16 @@
           })
         },
         handleFilter(){//查询过滤
-
+          this.tableQuery.name = this.filters;
+          this.getTable();
+        },
+        handleSizeChange(val){
+          this.tableQuery.limit = val;
+          this.getTable();
+        },
+        handleCurrentChange(val){
+          this.tableQuery.page = val;
+          this.getTable();
         },
         handleCreate(){//创建
           this.dialog.dialogStatus = 'create';
@@ -186,11 +194,11 @@
                 });
               }
               this.loading.tableLoading = false ;
-
-
             });
           });
-        }
+        },
+
+
       },
       mounted(){
       }

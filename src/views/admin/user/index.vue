@@ -209,7 +209,7 @@
             this.listLoading = false;
           })
       },
-      handleSizeChange(){
+      handleSizeChange(val){
         this.listQuery.limit = val;
         this.gettable();
       },
