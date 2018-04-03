@@ -1,0 +1,11 @@
+/*左边自适应*/
+.use-flex{
+  display:flex;
+}
+.use-flex>div:first-child{
+  flex:1;
+}
+.use-flex>div:last-child{
+  flex:none;
+  margin:0px 5px ;
+}

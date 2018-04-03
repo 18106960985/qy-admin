@@ -153,6 +153,12 @@ export const asyncRouterMap = [
         authority: 'menuManager',
         name: '菜单管理',
         meta: { title: 'createForm', icon: 'table'
+        }},
+      { path: 'dictManager',
+        component: _import('admin/dict/index'),
+        authority: 'dictManager',
+        name: '数据字典',
+        meta: { title: 'createForm', icon: 'table'
         }}
     ]
   },

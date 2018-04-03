@@ -69,10 +69,10 @@
 <script>
     import {
       fetchTree
-    } from '../../../api/admin/menu/index';
+    } from '@/api/admin/menu/index';
     import {
       delObj
-    } from '../../../api/admin/menu/index';
+    } from '@/api/admin/menu/index';
     import { mapGetters } from 'vuex';
 
     export default {
@@ -184,16 +184,6 @@
 </script>
 
 <style scoped>
-  /*左边自适应*/
-  .use-flex{
-    display:flex;
-  }
-  .use-flex>div:first-child{
-    flex:1;
-  }
-  .use-flex>div:last-child{
-    flex:none;
-    margin:0px 5px ;
-  }
+
 
 </style>

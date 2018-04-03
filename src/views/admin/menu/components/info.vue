@@ -36,22 +36,24 @@
       <!--<el-form-item label="前端组件" >-->
         <!--<el-input v-model="menuForm.code"  :disabled="formStatus"  placeholder="请输入路径编码"></el-input>-->
       <!--</el-form-item>-->
-      <el-form-item v-if="form.status == 'create'">
+      <el-form-item >
         <el-tooltip effect="light" placement="top" content="重置表单" >
           <el-button @click="resetForm()"> 重置</el-button>
         </el-tooltip>
-        <el-tooltip effect="light" placement="top" content="创建新菜单">
-          <el-button type="primary" @click="create">创建</el-button>
+        <el-tooltip effect="light" placement="top" content="创建新菜单" >
+          <el-button type="primary" @click="create" v-if="form.status == 'create'">创建</el-button>
+        </el-tooltip>
+
+        <el-tooltip effect="light" placement="top" content="更新菜单详情">
+          <el-button type="primary" @click="update" v-if="form.status == 'update'" >更新</el-button>
         </el-tooltip>
       </el-form-item>
-      <el-form-item v-if="form.status == 'update'">
+      <el-form-item >
         <el-tooltip effect="light" placement="top" content="重置表单" >
           <el-button @click="resetForm()"> 重置</el-button>
         </el-tooltip>
 
-        <el-tooltip effect="light" placement="top" content="更新菜单详情">
-          <el-button type="primary" @click="update" >更新</el-button>
-        </el-tooltip>
+
       </el-form-item>
 
     </el-form>
