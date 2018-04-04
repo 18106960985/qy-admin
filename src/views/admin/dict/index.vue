@@ -12,25 +12,12 @@
              <span> 字典目录</span>
             </div>
             <el-input size="medium" placeholder="关键字过滤" class="filter-item"></el-input>
-            <!--<div class="use-flex">-->
-              <!--<div>-->
-                <!--&lt;!&ndash;<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="姓名或账户" v-model="searchForNameOrAccount" />&ndash;&gt;-->
-               <!---->
-              <!--</div>-->
-              <!--<div>-->
-                <!--<el-button class="filter-item" type="primary" v-waves icon="el-icon-search">{{$t('table.search')}}</el-button>-->
-              <!--</div>-->
-            <!--</div>-->
-            <!--:filter-node-method="filterNode"-->
-            <!--ref="dictTree"-->
-            <!--@node-click="getNodeData"-->
-            <!--:expand-on-click-node="false"-->
             <el-tree
               :data="treeData"
               node-key="id"
               highlight-current
               :props="defaultProps"
-
+              :expand-on-click-node="false"
               default-expand-all
               v-loading="loading.treeLoading"
               element-loading-text="数据字典初始化中……"
@@ -144,34 +131,34 @@
         },
         treeCreated(node, data){
           this.myCard.typeVisible = false;
-          if( this.$refs.dictTypeForm){
-            let _this= this;
-            this.$refs.dictTypeForm.$nextTick(()=>{
-              _this.dictType.stauts = 'created';
-              _this.dictType.currentDictTypeId = undefined;
-              _this.$refs.dictTypeForm.initForm(data.id,data.label);
-            })
-          }else{
+          // if( this.$refs.dictTypeForm){
+          //   let _this= this;
+          //   this.$refs.dictTypeForm.$nextTick(()=>{
+          //     _this.dictType.stauts = 'created';
+          //     _this.dictType.currentDictTypeId = undefined;
+          //     _this.$refs.dictTypeForm.initForm(data.id,data.label);
+          //   })
+          // }else{
             this.dictType.stauts = 'created';
             this.dictType.currentDictTypeId = undefined;
             this.$refs.dictTypeForm.initForm(data.id,data.label);
-          }
+          // }
 
         },
         treeUpdate(node,data){
           this.myCard.typeVisible = false;
-          if( this.$refs.dictTypeForm){
-            let _this= this;
-            this.$refs.dictTypeForm.$nextTick(()=>{
-              _this.dictType.parentName =  node.parent.label != undefined ? node.parent.label :'Root';
-              _this.dictType.currentDictTypeId = data.id;
-              _this.dictType.stauts = 'update';
-            })
-          }else{
+          // if( this.$refs.dictTypeForm){
+          //   let _this= this;
+          //   this.$refs.dictTypeForm.$nextTick(()=>{
+          //     _this.dictType.parentName =  node.parent.label != undefined ? node.parent.label :'Root';
+          //     _this.dictType.currentDictTypeId = data.id;
+          //     _this.dictType.stauts = 'update';
+          //   })
+          // }else{
             this.dictType.parentName =  node.parent.label != undefined ? node.parent.label :'Root';
             this.dictType.currentDictTypeId = data.id;
             this.dictType.stauts = 'update';
-          }
+          // }
 
         },
         treeDelelte(node,data){
