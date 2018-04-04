@@ -27,7 +27,7 @@
 
 
     <el-form-item >
-      <el-tooltip effect="light" placement="top" content="重置表单" >
+      <el-tooltip effect="light" placement="top" content="取消" >
         <el-button @click="closeEven">取消</el-button>
       </el-tooltip>
 

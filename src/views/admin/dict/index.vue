@@ -7,18 +7,22 @@
 
          <!--左边-->
         <el-col :span="8" >
+
+
           <el-card style="margin-right:10px;">
             <div slot="header" class="clearfix">
              <span> 字典目录</span>
             </div>
-            <el-input size="medium" placeholder="关键字过滤" class="filter-item"></el-input>
+            <el-input size="medium" placeholder="关键字过滤" class="filter-item" v-model="fiterls"></el-input>
             <el-tree
               :data="treeData"
               node-key="id"
               highlight-current
               :props="defaultProps"
               :expand-on-click-node="false"
+              ref="treeData"
               default-expand-all
+              :filter-node-method="filterNode"
               v-loading="loading.treeLoading"
               element-loading-text="数据字典初始化中……"
               element-loading-spinner="el-icon-loading"
@@ -33,27 +37,27 @@
         <el-col :span="16" >
 
           <!--2个卡片-->
-          <keep-alive>
-          <el-card style="height: 100%" v-if="myCard.typeVisible">
+          <transition  name="box-move-x"  mode="out-in">
+          <el-card v-if="myCard.typeVisible" style="height: 100%"  >
             <div slot="header" class="clearfix">
               <span> 字典集合</span>
             </div>
-            <transition appear name="box-move-x">
-              <dicet-value :curDictTypeId="curDictTypeId"></dicet-value>
-            </transition>
+            <keep-alive>
+              <dicet-value  :curDictTypeId="curDictTypeId"></dicet-value>
+            </keep-alive>
+
           </el-card>
-          </keep-alive>
-          <keep-alive>
-          <el-card style="height: 100%" v-if="!myCard.typeVisible">
+          <el-card  v-else  style="height: 100%" >
             <div slot="header" class="clearfix">
               <span v-if="dictType.stauts == 'created'">新增目录</span>
               <span v-if="dictType.stauts == 'update'">编辑目录</span>
             </div>
-            <transition appear name="box-move-x">
-            <dict-type ref="dictTypeForm" :form.sync="dictType" @changeEvent="getDictTree" @closeEvent="closeAnimation"></dict-type>
-            </transition>
-          </el-card>
-          </keep-alive>
+            <keep-alive>
+            <dict-type   ref="dictTypeForm" :form.sync="dictType" @changeEvent="getDictTree" @closeEvent="closeAnimation"></dict-type>
+            </keep-alive>
+           </el-card>
+
+          </transition>
         </el-col>
       </el-row>
 
@@ -72,6 +76,7 @@
       name: "index",
       data(){
            return {
+             view: 'dict-type',
              fiterls:'',
              treeData:[],
              defaultProps:{
@@ -98,6 +103,11 @@
              }
 
            }
+      },
+      watch:{
+        fiterls(val){
+          this.$refs.treeData.filter(val)
+        }
       },
       created(){
         this.getDictTree();
@@ -127,39 +137,23 @@
         },
         getNodeData(data,node){
           this.curDictTypeId=data.id;
-          // this.myCard.typeVisible = true;
+
+        },
+        filterNode(value, data) {
+          if (!value) return true;
+          return data.label.indexOf(value) !== -1;
         },
         treeCreated(node, data){
           this.myCard.typeVisible = false;
-          // if( this.$refs.dictTypeForm){
-          //   let _this= this;
-          //   this.$refs.dictTypeForm.$nextTick(()=>{
-          //     _this.dictType.stauts = 'created';
-          //     _this.dictType.currentDictTypeId = undefined;
-          //     _this.$refs.dictTypeForm.initForm(data.id,data.label);
-          //   })
-          // }else{
-            this.dictType.stauts = 'created';
-            this.dictType.currentDictTypeId = undefined;
-            this.$refs.dictTypeForm.initForm(data.id,data.label);
-          // }
-
+          this.dictType.stauts = 'created';
+          this.dictType.currentDictTypeId = undefined;
+          this.$refs.dictTypeForm.initForm(data.id,data.label);
         },
         treeUpdate(node,data){
           this.myCard.typeVisible = false;
-          // if( this.$refs.dictTypeForm){
-          //   let _this= this;
-          //   this.$refs.dictTypeForm.$nextTick(()=>{
-          //     _this.dictType.parentName =  node.parent.label != undefined ? node.parent.label :'Root';
-          //     _this.dictType.currentDictTypeId = data.id;
-          //     _this.dictType.stauts = 'update';
-          //   })
-          // }else{
-            this.dictType.parentName =  node.parent.label != undefined ? node.parent.label :'Root';
-            this.dictType.currentDictTypeId = data.id;
-            this.dictType.stauts = 'update';
-          // }
-
+          this.dictType.parentName =  node.parent.label != undefined ? node.parent.label :'Root';
+          this.dictType.currentDictTypeId = data.id;
+          this.dictType.stauts = 'update';
         },
         treeDelelte(node,data){
           this.$confirm('此操作将永久删除, 是否继续?', '提示', {
@@ -177,7 +171,6 @@
                   type: 'success',
                   duration: 2000
                 });
-
               }else {
 
               }
