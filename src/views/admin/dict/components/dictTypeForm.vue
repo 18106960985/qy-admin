@@ -70,24 +70,7 @@
             }
           }
       },
-      computed:{
-        currentDictTypeId(){
-            return this.form.currentDictTypeId;
-          },
-        stauts(){
-          return this.form.stauts;
-        }
-      },
-      watch:{
-        currentDictTypeId(){
-          if(this.form.stauts == 'update'){
-            if(this.form.currentDictTypeId != -1)  this.getDictType();
-          }else{
 
-          }
-        },
-
-      },
       data(){
          return {
            dictTypeForm:{
@@ -105,26 +88,45 @@
            }
          }
       },
-      methods:{
+      computed:{
+        currentDictTypeId(){
+          return this.form.currentDictTypeId;
+        },
+        stauts(){
+          return this.form.stauts;
+        }
+      },
+      watch:{
+        currentDictTypeId(){
+          if(this.form.stauts == 'update'){
+            if(this.form.currentDictTypeId != -1)  this.getDictType();
+          }else{
 
+          }
+        },
+
+      },
+      created(){
+        this.getDictType()
+      },
+      methods:{
           // 初始化表单 给父级用的
           initForm(id,name){
             this.resetForm();
             this.dictTypeForm.parentId = id;
             this.dictTypeForm.parentName = name;
           },
-          getForm(){
-            this.getDictTree();
-          },
           changeEvent(){
             this.$emit('changeEvent');
           },
           getDictType(){
+            this.loading.formLoading = true;
             getDictType(this.currentDictTypeId).then(res =>{
                 if(res.rel){
                   this.dictTypeForm = res.data;
                   this.dictTypeForm.parentName = this.form.parentName;
                 }
+              this.loading.formLoading = false;
             })
           },
           create(){
@@ -181,7 +183,7 @@
             this.$refs['dictTypeForm'].resetFields();
           },
           closeEven(){
-            this.resetForm();
+            // this.resetForm();
             this.$emit("closeEvent")
           }
       }

@@ -144,16 +144,34 @@
         },
         treeCreated(node, data){
           this.myCard.typeVisible = false;
-          this.dictType.stauts = 'created';
-          this.dictType.currentDictTypeId = undefined;
-          this.$refs.dictTypeForm.initForm(data.id,data.label);
+          if( this.$refs.dictTypeForm){
+            let _this= this;
+            this.$refs.dictTypeForm.$nextTick(()=>{
+              _this.dictType.stauts = 'created';
+              _this.dictType.currentDictTypeId = undefined;
+              _this.$refs.dictTypeForm.initForm(data.id,data.label);
+            })
+          }else{
+            this.dictType.stauts = 'created';
+            this.dictType.currentDictTypeId = undefined;
+            this.$refs.dictTypeForm.initForm(data.id,data.label);
+          }
+
         },
         treeUpdate(node,data){
           this.myCard.typeVisible = false;
-          this.dictType.parentName =  node.parent.label != undefined ? node.parent.label :'Root';
-          this.dictType.currentDictTypeId = data.id;
-
-          this.dictType.stauts = 'update';
+          if( this.$refs.dictTypeForm){
+            let _this= this;
+            this.$refs.dictTypeForm.$nextTick(()=>{
+              _this.dictType.parentName =  node.parent.label != undefined ? node.parent.label :'Root';
+              _this.dictType.currentDictTypeId = data.id;
+              _this.dictType.stauts = 'update';
+            })
+          }else{
+            this.dictType.parentName =  node.parent.label != undefined ? node.parent.label :'Root';
+            this.dictType.currentDictTypeId = data.id;
+            this.dictType.stauts = 'update';
+          }
 
         },
         treeDelelte(node,data){

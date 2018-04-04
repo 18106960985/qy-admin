@@ -97,30 +97,7 @@
 
 
       },
-      computed:{
-        currentMenuId(){
-          return this.form.currentMenuId;
-        },
-        status(){
-          return this.form.status;
-        }
-      },
-      watch:{
-        currentMenuId(){
-          this.getMenuInfo()
-        },
-        status(){
-          if(this.form.status == "create"){
-            let parentId =this.menuForm.id,
-                parentName =  this.menuForm.title;
-            this.resetForm();
-            this.menuForm.parentId =parentId;
-            this.menuForm.parentName = parentName;
 
-          }
-        }
-
-      },
       data(){
         var checkAge = (rule, value, callback) => {
           callback();
@@ -147,6 +124,32 @@
             },
           }
       },
+
+      computed:{
+        currentMenuId(){
+          return this.form.currentMenuId;
+        },
+        status(){
+          return this.form.status;
+        }
+      },
+      watch:{
+        currentMenuId(){
+          this.getMenuInfo()
+        },
+        status(){
+          if(this.form.status == "create"){
+            let parentId =this.menuForm.id,
+              parentName =  this.menuForm.title;
+            this.resetForm();
+            this.menuForm.parentId =parentId;
+            this.menuForm.parentName = parentName;
+
+          }
+        }
+
+      },
+
       methods:{
         changEvent(){
           this.$emit("changEvent");
@@ -179,7 +182,6 @@
                 duration: 2000
               });
             }else{
-            console.log(res)
             }
           })
         },
