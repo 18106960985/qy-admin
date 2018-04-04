@@ -24,16 +24,18 @@
             <!--:filter-node-method="filterNode"-->
             <!--ref="dictTree"-->
             <!--@node-click="getNodeData"-->
+            <!--:expand-on-click-node="false"-->
             <el-tree
               :data="treeData"
               node-key="id"
               highlight-current
               :props="defaultProps"
-              :expand-on-click-node="false"
+
               default-expand-all
               v-loading="loading.treeLoading"
               element-loading-text="数据字典初始化中……"
               element-loading-spinner="el-icon-loading"
+              @node-click="getNodeData"
               :render-content="renderContent"
             >
 
@@ -44,25 +46,27 @@
         <el-col :span="16" >
 
           <!--2个卡片-->
+          <keep-alive>
           <el-card style="height: 100%" v-if="myCard.typeVisible">
             <div slot="header" class="clearfix">
               <span> 字典集合</span>
             </div>
-
-
+            <transition appear name="box-move-x">
+              <dicet-value :curDictTypeId="curDictTypeId"></dicet-value>
+            </transition>
           </el-card>
+          </keep-alive>
+          <keep-alive>
           <el-card style="height: 100%" v-if="!myCard.typeVisible">
             <div slot="header" class="clearfix">
               <span v-if="dictType.stauts == 'created'">新增目录</span>
               <span v-if="dictType.stauts == 'update'">编辑目录</span>
             </div>
-
-            <dict-type ref="dictTypeForm" :form.sync="dictType" @changeEvent="getDictTree"></dict-type>
-
+            <transition appear name="box-move-x">
+            <dict-type ref="dictTypeForm" :form.sync="dictType" @changeEvent="getDictTree" @closeEvent="closeAnimation"></dict-type>
+            </transition>
           </el-card>
-
-
-
+          </keep-alive>
         </el-col>
       </el-row>
 
@@ -70,11 +74,13 @@
 </template>
 
 <script>
-  import {getDictTree } from '@/api/admin/dict/dictType';
+  import {getDictTree ,delObj} from '@/api/admin/dict/dictType';
   import dictType from './components/dictTypeForm';
+  import dictValue from './components/dictValueIndex'
     export default {
       components: {
-        'dict-type': dictType
+        'dict-type': dictType,
+        'dicet-value': dictValue
       },
       name: "index",
       data(){
@@ -85,11 +91,11 @@
                children: 'children',
                label: 'label'
              },
+             curDictTypeId:-1,
              myCard:{
-               typeVisible:false,//两种状态一 是value form 二是type form
+               typeVisible:true,//两种状态一 是value form 二是type form
              },
              dictType:{
-
                currentDictTypeId:-1,
                stauts:'created',
                parentName:'Root',
@@ -132,6 +138,10 @@
           </span>
           </span>);
         },
+        getNodeData(data,node){
+          this.curDictTypeId=data.id;
+          // this.myCard.typeVisible = true;
+        },
         treeCreated(node, data){
           this.myCard.typeVisible = false;
           this.dictType.stauts = 'created';
@@ -142,11 +152,39 @@
           this.myCard.typeVisible = false;
           this.dictType.parentName =  node.parent.label != undefined ? node.parent.label :'Root';
           this.dictType.currentDictTypeId = data.id;
+
           this.dictType.stauts = 'update';
+
         },
         treeDelelte(node,data){
+          this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.loading.treeLoading = true;
+            delObj(data.id).then(res => {
+              if(res.rel){
+                this.getDictTree();
+                this.$notify({
+                  title: '成功',
+                  message: '删除成功',
+                  type: 'success',
+                  duration: 2000
+                });
 
+              }else {
+
+              }
+              this.loading.treeLoading = false;
+            })
+          });
+        },
+        //这是一个监听切换的动画效果
+        closeAnimation(){
+          this.myCard.typeVisible = true;
         }
+
 
       },
       mounted(){

@@ -40,5 +40,13 @@ export function update(id,obj){
 
 }
 
+export function delObj(id) {
+  return request({
+    url:API+id,
+    method: 'delete',
+  })
+
+}
+
 
 

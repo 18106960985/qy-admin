@@ -28,7 +28,7 @@
 
     <el-form-item >
       <el-tooltip effect="light" placement="top" content="重置表单" >
-        <el-button @click="resetForm()"> 重置</el-button>
+        <el-button @click="closeEven">取消</el-button>
       </el-tooltip>
 
       <el-tooltip effect="light" placement="top" content="创建新菜单" v-if="form.stauts == 'created'" >
@@ -80,8 +80,8 @@
       },
       watch:{
         currentDictTypeId(){
-          if(this.stauts == 'update'){
-            if(this.currentDictTypeId|| this.currentDictTypeId != -1)  this.getDictType();
+          if(this.form.stauts == 'update'){
+            if(this.form.currentDictTypeId != -1)  this.getDictType();
           }else{
 
           }
@@ -106,11 +106,15 @@
          }
       },
       methods:{
+
           // 初始化表单 给父级用的
           initForm(id,name){
             this.resetForm();
             this.dictTypeForm.parentId = id;
             this.dictTypeForm.parentName = name;
+          },
+          getForm(){
+            this.getDictTree();
           },
           changeEvent(){
             this.$emit('changeEvent');
@@ -123,7 +127,6 @@
                 }
             })
           },
-
           create(){
             this.loading.formLoading = true;
             this.loading.submitLoading = true;
@@ -176,9 +179,10 @@
           },
           resetForm(){
             this.$refs['dictTypeForm'].resetFields();
-            console.log(2)
-
-
+          },
+          closeEven(){
+            this.resetForm();
+            this.$emit("closeEvent")
           }
       }
 

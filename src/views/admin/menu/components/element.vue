@@ -7,7 +7,7 @@
         <el-button class="filter-item" type="primary"  icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>
       </el-tooltip>
       <el-tooltip placement="top" content="创建新组件资源">
-        <el-button v-if="authority.menuManager_btn_element_add" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('table.add')}}</el-button>
+        <el-button v-if="authority.menuManager_btn_element_add " class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('table.add')}}</el-button>
       </el-tooltip>
       <el-checkbox class="filter-item" style='margin-left:15px;' @change='tableKey=tableKey+1' v-model="show.description">备注</el-checkbox>
     </div>
@@ -59,7 +59,7 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="tableQuery.page" :page-sizes="[10,20,30, 50]" :page-size="tableQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>
     </div>
 
-    <element-form :dialog.sync="dialog" :currentMenuId="currentMenuId" ref="Form" @change="getTable"></element-form>
+     <element-form :dialog.sync="dialog" :currentMenuId="currentMenuId" ref="Form" @change="getTable"></element-form>
     </div>
   <!--</div>-->
 

@@ -31,3 +31,17 @@
   position: absolute;
 }
 
+
+
+
+.box-move-x-enter-active {
+  transition: all .3s ease;
+}
+.box-move-x-leave-active {
+  transition: all .5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.box-move-x-enter, .box-move-x-leave-to
+  /* .slide-fade-leave-active for below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
