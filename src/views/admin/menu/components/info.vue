@@ -40,19 +40,9 @@
         <el-tooltip effect="light" placement="top" content="重置表单" >
           <el-button @click="resetForm()"> 重置</el-button>
         </el-tooltip>
-        <el-tooltip effect="light" placement="top" content="创建新菜单" >
-          <el-button type="primary" @click="create" v-if="form.status == 'create'">创建</el-button>
-        </el-tooltip>
 
-        <el-tooltip effect="light" placement="top" content="更新菜单详情">
-          <el-button type="primary" @click="update" v-if="form.status == 'update'" >更新</el-button>
-        </el-tooltip>
-      </el-form-item>
-      <el-form-item >
-        <el-tooltip effect="light" placement="top" content="重置表单" >
-          <el-button @click="resetForm()"> 重置</el-button>
-        </el-tooltip>
-
+          <el-button type="primary" @click="create" v-if="form.status == 'create'" v-loading="loading.submitLoading">创建</el-button>
+          <el-button type="primary" @click="update" v-if="form.status == 'update'" v-loading="loading.submitLoading">更新</el-button>
 
       </el-form-item>
 
@@ -121,6 +111,7 @@
             typeOptions: ['menu', 'dirt'],
             loading:{
               formLoading:false,
+              submitLoading:false,
             },
           }
       },
@@ -172,6 +163,7 @@
           this.form.status = "create";
         },
         create(){
+          this.loading.submitLoading = true;
           addObj(this.menuForm).then(res =>{
             this.changEvent();
             if(res.rel){
@@ -183,9 +175,13 @@
               });
             }else{
             }
+            this.loading.submitLoading = false;
+
           })
         },
         update(){
+          this.loading.submitLoading = true;
+
           putObj(this.menuForm.id, this.menuForm).then(() => {
             this.changEvent();
             this.$notify({
@@ -194,6 +190,7 @@
               type: 'success',
               duration: 2000
             });
+            this.loading.submitLoading = false;
           });
         }
       }

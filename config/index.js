@@ -18,9 +18,15 @@ module.exports = {
         },
       },
       '/api':{
-        target: 'http://localhost:8765',
+          target: 'http://localhost:8765',
+          pathRewrite: {
+            '^/api': '/api'
+          },
+      },
+      '/media': {
+        target: 'http://media.meta.com',
         pathRewrite: {
-          '^/api': '/api'
+          '^/media': '/media'
         },
       }
     },
