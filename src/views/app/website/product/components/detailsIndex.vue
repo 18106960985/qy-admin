@@ -1,0 +1,197 @@
+<!--产品详情-->
+<template>
+  <div class="app-container calendar-list-container">
+    <!--搜索工具栏-->
+    <div class="filter-container">
+      <el-input v-model="filters" @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="字段编码" />
+        <el-button class="filter-item" type="primary"  icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>
+        <el-button v-if="authority.dictManager_btn_element_add &&  curId != -1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('table.add')}}</el-button>
+
+    </div>
+
+    <!--这就是个表格不要怀疑-->
+    <el-row>
+      <el-col :span="5" v-for="(o, index) in 8" :key="o"  style="margin: 5px">
+        <el-card :body-style="{ padding: '0px' }" shadow="hover">
+          <img src="http://element-cn.eleme.io/static/hamburger.50e4091.png" class="image">
+          <div style="padding: 14px;">
+            <span>好吃的汉堡</span>
+            <div class="bottom clearfix">
+              <time class="time">11111</time>
+              <el-button type="text" class="button">删除</el-button>
+              <el-button type="text" class="button">编辑</el-button>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
+
+    <!--分页-->
+    <div v-show="!loading.tableLoading" class="pagination-container">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="tableQuery.page" :page-sizes="[10,20,30, 50]" :page-size="tableQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>
+    </div>
+
+
+
+
+  </div>
+</template>
+
+<script>
+  import {page,delObj} from '@/api/app/product/detailsIndex'
+  import { mapGetters } from 'vuex';
+  import eventhub from '@/eventHub/eventHub'
+  // import dictValueForm from './dictValueForm';
+  export default {
+    name: "product-details",
+    components:{
+      // 'dict-value-form':dictValueForm,
+    },
+    props:{
+      curId:{
+        type: Number,
+      }
+
+    },
+    data(){
+      return {
+        filters:'',
+
+        table:null,
+        total:null,
+        tableKey:0,
+        tableQuery:{
+          page:1,
+          limit:20,
+          filters:'',
+        },
+        loading:{
+          tableLoading: false,
+        },
+        dialog:{
+          dialogStatus:'create',
+          dialogFormVisible: false,
+        },
+        authority:{
+          dictManager_btn_element_add: true,
+          dictManager_btn_element_edit: true,
+          dictManager_btn_element_del: true,
+        },
+      }
+    },
+    computed:{
+      ...mapGetters([
+        'elements'
+      ])
+    },
+    watch:{
+      curId(){
+        this.getTable();
+      }
+    },
+    created(){
+      this.getTable();
+    },
+
+    methods:{
+      getTable(){
+        if( this.curId == -1) return;
+        let fitters ='';
+        if(this.curId) fitters +="EQ_dictType.id="+this.curId+';';
+        if(this.fiterls) fitters+= 'RLICK_code='+this.fiterls+';';
+        this.tableQuery.filters = fitters;
+        this.loading.tableLoading = true;
+        page(this.tableQuery).then(res=>{
+          this.loading.tableLoading = false;
+          this.table = res.data.rows;
+          this.total = res.data.total;
+        });
+      },
+      handleFilter(){//查询过滤
+        this.getTable();
+      },
+      handleSizeChange(val){
+        this.tableQuery.limit = val;
+        this.getTable();
+      },
+      handleCurrentChange(val){
+        this.tableQuery.page = val;
+        this.getTable();
+      },
+      handleCreate(){//创建
+
+        eventhub.$emit('switchCard');
+
+      },
+
+      handleUpdate(){
+        // this.$refs.Form.form = row;
+        eventhub.$emit('switchCard');
+      },
+      handleDelete(row){
+        this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.loading.tableLoading = true ;
+          delObj(row.id).then(res => {
+            if (res.rel){
+              this.$notify({
+                title: '成功',
+                message: '删除成功',
+                type: 'success',
+                duration: 2000
+              });
+              let index = this.table.indexOf(row);
+              this.table.splice(index, 1);
+            }else{
+              this.$notify({
+                title: '失败',
+                message: res.message,
+                type: 'error',
+                duration: 2000
+              });
+            }
+            this.loading.tableLoading = false ;
+          });
+        });
+      }
+
+    },
+
+  }
+</script>
+
+<style scoped>
+  .time {
+    font-size: 13px;
+    color: #999;
+  }
+
+  .bottom {
+    margin-top: 13px;
+    line-height: 12px;
+  }
+
+  .button {
+    padding: 0;
+    float: right;
+  }
+
+  .image {
+    width: 100%;
+    display: block;
+  }
+
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+
+  .clearfix:after {
+    clear: both
+  }
+</style>

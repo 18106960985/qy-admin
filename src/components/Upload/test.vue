@@ -1,6 +1,6 @@
 <template>
   <div class="upload-container">
-    <el-upload class="image-uploader" :data="dataObj" drag :multiple="false" :show-file-list="false" action="media/upload"
+    <el-upload class="image-uploader" :data="dataObj" drag :multiple="false" :show-file-list="false" action="http://media.meta.com/media/upload"
                :on-success="handleImageScucess">
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -50,8 +50,11 @@
       emitInput(val) {
         this.$emit('input', val)
       },
-      handleImageScucess(file,) {
-        this.emitInput(file.data.path)
+      handleImageScucess(response, file, fileList) {
+        console.log(response)
+        console.log(file)
+        console.log(fileList)
+        this.emitInput(file.files.file)
       },
       beforeUpload() {
         const _self = this
