@@ -118,25 +118,26 @@ export const asyncRouterMap = [
     },
     children: [
       { path: 'websiteIndex',
-        component: _import('app/website/product/index'),
+        component: _import('app/website/information/index'),
         authority: 'websiteIndex',
         name: '首页管理',
         meta: { title: 'createForm', icon: 'table'
         }},
       { path: 'productMangement',
-        component: _import('form/edit'),
+        component: _import('app/website/product/index'),
         authority: 'productMangement',
         name: '产品管理',
         meta: { title: 'createForm', icon: 'table'
         }},
       { path: 'InformationMangement',
-        component: _import('form/create'),
+        component: _import('app/website/information/complexTable'),
         authority: 'InformationMangement',
         name: '资讯管理',
         meta: { title: 'createForm', icon: 'table'
         }}
     ]
   },
+  // component: _import('app/website/information/components/informationIndex'),
 
 
   { path: '*', redirect: '/404', hidden: true }

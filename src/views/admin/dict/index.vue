@@ -49,8 +49,8 @@
           </el-card>
           <el-card  v-else  style="height: 100%" >
             <div slot="header" class="clearfix">
-              <span v-if="dictType.stauts == 'created'">新增目录</span>
-              <span v-if="dictType.stauts == 'update'">编辑目录</span>
+              <span v-if="dictType.status == 'created'">新增目录</span>
+              <span v-if="dictType.status == 'update'">编辑目录</span>
             </div>
             <keep-alive>
             <dict-type   ref="dictTypeForm" :form.sync="dictType" @changeEvent="getDictTree" @closeEvent="closeAnimation"></dict-type>
@@ -89,7 +89,7 @@
              },
              dictType:{
                currentDictTypeId:-1,
-               stauts:'created',
+               status:'created',
                parentName:'Root',
 
              },
@@ -145,7 +145,7 @@
         },
         treeCreated(node, data){
           this.myCard.typeVisible = false;
-          this.dictType.stauts = 'created';
+          this.dictType.status = 'created';
           this.dictType.currentDictTypeId = undefined;
           this.$refs.dictTypeForm.initForm(data.id,data.label);
         },
@@ -153,7 +153,7 @@
           this.myCard.typeVisible = false;
           this.dictType.parentName =  node.parent.label != undefined ? node.parent.label :'Root';
           this.dictType.currentDictTypeId = data.id;
-          this.dictType.stauts = 'update';
+          this.dictType.status = 'update';
         },
         treeDelelte(node,data){
           this.$confirm('此操作将永久删除, 是否继续?', '提示', {

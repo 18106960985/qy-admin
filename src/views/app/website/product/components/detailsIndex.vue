@@ -17,7 +17,7 @@
           <div style="padding: 14px;">
             <span>{{value.name}}</span>
             <div class="bottom clearfix">
-              <!--<time class="time">{{value.crtTime }}</time>-->
+              <time class="time">{{value.crtTime  | parseTime('{y}-{m}-{d}')}} </time>
               <el-button type="text" class="button" @click="handleDelete(value.id)">删除</el-button>
               <el-button type="text" class="button" @click="handleUpdate(value.id)">编辑</el-button>
             </div>

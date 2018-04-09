@@ -1,5 +1,5 @@
 
-<!--产品详情表单-->
+<!--文章详情表单-->
 <template>
   <div class="createPost-container">
     <el-form class="form-container" :model="postForm" :rules="rules" ref="postForm" v-loading="loading">
@@ -7,44 +7,73 @@
       <sticky :className="'sub-navbar '+postForm.status">
         <template v-if="fetchSuccess">
 
-          <el-button  v-if="isEdit"  v-loading="loading" style="margin-left: 10px;" type="success" @click="update()">更新
+          <el-button  v-if="isEdit"  v-loading="loading" style="margin-left: 10px;" type="success" @click="update">编辑
           </el-button>
-          <el-button  v-else  v-loading="loading" style="margin-left: 10px;" type="primary" @click="create()">创建
+          <el-button  v-else  v-loading="loading" style="margin-left: 10px;" type="primary" @click="create">发布
           </el-button>
-          <el-button v-loading="loading" @click="cancel">取消</el-button>
+          <el-button    v-loading="loading" style="margin-left: 10px;" type="warning" @click="draft">草稿
+          </el-button>
+          <el-button v-loading="loading"  @click="cancel">返回</el-button>
         </template>
         <template v-else>
           <el-tag>发送异常错误,刷新页面,或者联系程序员</el-tag>
         </template>
       </sticky>
 
+
       <div class="createPost-main-container">
         <el-row>
           <el-col :span="21">
             <el-form-item style="margin-bottom: 40px;" prop="title">
-              <MDinput name="name" v-model="postForm.name" required :maxlength="100">
-                产品名称
+              <MDinput name="name" v-model="postForm.title" required :maxlength="100">
+                文章标题
               </MDinput>
-              <span v-show="postForm.name.length>=26" class='title-prompt'>app可能会显示不全</span>
+              <span v-show="postForm.title.length>=26" class='title-prompt'>app可能会显示不全</span>
             </el-form-item>
+
+            <div class="postInfo-container">
+              <el-row>
+                <el-col :span="6">
+                  <el-form-item :label="$t('table.recommendLV')">
+                    <el-rate style="margin-top:8px;" v-model="postForm.recommendLV" :colors="['#99A9BF', '#F7BA2A', '#FF9900', '#FF9900']" :max='4'></el-rate>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="6">
+                  <el-form-item label-width="65px" label="编辑者:" class="postInfo-container-item">
+                    <el-input placeholder="编辑者" style='min-width:150px;' v-model="postForm.author"></el-input>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="6">
+                  <el-tooltip class="item" effect="dark" content="文章来源:" placement="top">
+                    <el-form-item label-width="80px" label="文章来源:" class="postInfo-container-item">
+                      <el-input placeholder="文章来源" style='min-width:150px;' v-model="postForm.sourceName">
+                      </el-input>
+                    </el-form-item>
+                  </el-tooltip>
+                </el-col>
+
+                <el-col :span="6">
+                  <el-form-item label-width="80px" label="发布时间:" class="postInfo-container-item">
+                    <el-date-picker v-model="postForm.display_time" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间">
+                    </el-date-picker>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
           </el-col>
 
           <el-col>
-            <el-form-item style="margin-bottom: 40px;" label-width="90px" label="产品缩略图:">
-            <div style="margin-bottom: 20px;">
-              <Upload v-model="postForm.smallImgPath"></Upload>
-            </div>
-            </el-form-item>
-            <el-form-item style="margin-bottom: 40px;" label-width="90px" label="产品图片:">
+            <el-form-item style="margin-bottom: 40px;" label-width="90px" label="文章图片:">
               <div style="margin-bottom: 20px;">
                 <Upload v-model="postForm.imgPath" type="xxx"></Upload>
               </div>
             </el-form-item>
           </el-col>
-
         </el-row>
 
-        <el-form-item style="margin-bottom: 40px;" label-width="90px" label="产品介绍:">
+        <el-form-item style="margin-bottom: 40px;" label-width="90px" label="文章简介:">
           <el-input type="textarea" class="article-textarea" :rows="1" autosize placeholder="请输入内容" v-model="postForm.introduce">
           </el-input>
           <span class="word-counter" v-show="introduceLength">{{introduceLength}}字</span>
@@ -70,25 +99,27 @@
   import 'vue-multiselect/dist/vue-multiselect.min.css'
   import Sticky from '@/components/Sticky'
 
-  import {getObj,addObj , putObj} from '@/api/app/product/detailsIndex'
+  import {getObj,addObj , putObj} from '@/api/app/information/index'
 
 
 
   const defaultForm = {
     id: undefined,
-    name: '', //  产品名称
-    label: '', // 产品标签
-    smallImgPath: '', // 产品缩略图
+    title: '', //  产品名称
     imgPath: '', // 产品图片
     introduce:'',//产品介绍
     details:'', //产品详情
-    typeId:''
+    author:'', //作者
+    sourceName:'',//文章来源
+    recommendLV:0,
+    displayTime:'',//发布时间
+    status:''
   }
 
 
 
   export default {
-    name: "product-detail",
+    name: "information-detail",
     components: { Tinymce, MDinput, Upload, Multiselect, Sticky  },
     props: {
       isEdit: {
@@ -96,7 +127,6 @@
         default: false
       },
       curId: Number,
-      curTypeId: Number,
     },
     data() {
       return {
@@ -117,9 +147,7 @@
       if (this.isEdit) {
         this.fetchData()
       } else {
-        this.postForm = Object.assign({}, defaultForm)
-        this.postForm.typeId = this.curTypeId;
-        this.postForm.id = this.curId;
+        this.postForm = Object.assign({}, defaultForm);
       }
     },
     methods: {
@@ -133,6 +161,7 @@
       },
       create(){
         this.loading = true;
+        this.postForm.status = 'published';
         addObj(this.postForm).then(res=>{
           this.resultMsg(res);
         }).catch(err=>{
@@ -146,9 +175,40 @@
           this.fetchSuccess = false;
         })
       },
+      draft(){
+        this.loading = true;
+        this.postForm.status = 'draft';
+        addObj(this.postForm).then(res=>{
+          this.loading = false;
+          if (res.rel){
+          this.postForm = res.data.obj;
+            this.$notify({
+              title: '成功',
+              message: '草搞保存',
+              type: 'success',
+              duration: 2000
+            });
+          }else {
+            this.$notify({
+              title: '失败',
+              message: res.message,
+              type: 'error',
+              duration: 2000
+            });
+        }
+        }).catch(err=>{
+          this.$notify({
+            title:'error',
+            message: err.message,
+            type: 'error',
+            duration: 2000
+          })
+          this.loading = false;
+          this.fetchSuccess = false;
+        })
+      },
       update(){
         this.loading = true;
-        this.$set(this.postForm,'typeId',this.curTypeId)
         putObj(this.postForm.id,this.postForm).then( res=>{
           this.resultMsg(res);
         }).catch(err=>{
@@ -165,7 +225,7 @@
       resultMsg(res){
         this.loading = false;
         if (res.rel){
-         this.cancel();
+          this.cancel();
           eventhub.$emit('getTable');
           this.$notify({
             title: '成功',

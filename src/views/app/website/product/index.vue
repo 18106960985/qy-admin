@@ -1,18 +1,13 @@
 <!--整体的布局-->
 
 <template>
-  <div>
+
 
      <!--第一页功能页-->
     <transition-group appear name="box-move-x" mode="out-in">
+      <product-detail v-if="!current" :is-edit='status' :curId="curId" :curTypeId="curTypeId" :key="1"></product-detail>
       <product-index v-show="current" :key="0"></product-index>
-
-      <product-detail v-if="!current" :is-edit='stauts' :curId="curId" :curTypeId="curTypeId" :key="1"></product-detail>
-
     </transition-group>
-
-
-  </div>
 
 </template>
 
@@ -34,7 +29,7 @@
             current: true,
             curId: '', //当前表单的ID
             curTypeId: undefined,
-            stauts:false,
+            status:false,
           }
       },
       created(){
@@ -43,13 +38,10 @@
             if(val){
               this.curId = val.curId;
               this.curTypeId = val.curTypeId;
-              this.stauts = val.isEdit;
+              this.status = val.isEdit;
             }
         });
 
-        eventhub.$on("operatingForm",(obj)=>{
-
-        })
       }
     }
 </script>

@@ -26,11 +26,11 @@
           <el-button @click="closeEven">取消</el-button>
         </el-tooltip>
 
-        <el-tooltip effect="light" placement="top" content="创建新菜单" v-if="form.stauts == 'created'" >
+        <el-tooltip effect="light" placement="top" content="创建新菜单" v-if="form.status == 'created'" >
           <el-button type="primary" @click="create"  v-loading="loading.submitLoading">创建</el-button>
         </el-tooltip>
 
-        <el-tooltip effect="light" placement="top" content="更新菜单详情"  v-if="form.stauts == 'update'">
+        <el-tooltip effect="light" placement="top" content="更新菜单详情"  v-if="form.status == 'update'">
           <el-button type="primary" @click="update" v-loading="loading.submitLoading">更新</el-button>
         </el-tooltip>
       </el-form-item>
@@ -89,13 +89,13 @@
       curId(){
         return this.form.curId;
       },
-      stauts(){
-        return this.form.stauts;
+      status(){
+        return this.form.status;
       }
     },
     watch:{
       curId(){
-        if(this.form.stauts == 'update'){
+        if(this.form.status == 'update'){
           if(this.form.curId != -1)  this.getForm();
         }else{
 

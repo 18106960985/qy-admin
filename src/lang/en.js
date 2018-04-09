@@ -88,6 +88,8 @@ export default {
     dragTips2: 'The after dragging order',
     title: 'Title',
     importance: 'Imp',
+    recommendLV:'RL',
+
     type: 'Type',
     remark: 'Remark',
     search: 'Search',
@@ -97,6 +99,7 @@ export default {
     id: 'ID',
     date: 'Date',
     author: 'Author',
+    source:'source',
     readings: 'Readings',
     status: 'Status',
     actions: 'Actions',

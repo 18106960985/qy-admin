@@ -49,7 +49,7 @@
           </el-card>
           <el-card  v-else  style="height: 100%" >
             <div slot="header" class="clearfix">
-              <span >{{textMap[productType.stauts]}}</span>
+              <span >{{textMap[productType.status]}}</span>
             </div>
             <keep-alive>
               <product-type   ref="productTypeForm" :form.sync="productType" @changeEvent="getTree" @closeEvent="closeAnimation"></product-type>
@@ -87,7 +87,7 @@
         },
         productType:{
           curId:-1,
-          stauts:'created',
+          status:'created',
           parentName:'Root',
 
         },
@@ -147,7 +147,7 @@
       },
       treeCreated(node, data){
         this.myCard.typeVisible = false;
-        this.productType.stauts = 'created';
+        this.productType.status = 'created';
         this.productType.curId = undefined;
         this.$refs.productTypeForm.initForm(data.id,data.label);
       },
@@ -155,7 +155,7 @@
         this.myCard.typeVisible = false;
         this.productType.parentName =  node.parent.label != undefined ? node.parent.label :'Root';
         this.productType.curId = data.id;
-        this.productType.stauts = 'update';
+        this.productType.status = 'update';
       },
       treeDelelte(node,data){
         this.$confirm('此操作将永久删除, 是否继续?', '提示', {
