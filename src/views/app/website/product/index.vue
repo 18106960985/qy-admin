@@ -1,17 +1,17 @@
 <!--整体的布局-->
 
 <template>
-  <div class="app-container calendar-list-container " style="width:100%;overflow:hidden">
+  <div>
 
 
      <!--第一页功能页-->
-    <ye-card-page :currentPage="currentPage" :index="1" >
-      <product-index></product-index>
-    </ye-card-page>
-    <!--第二页一个大表单-->
-    <ye-card-page :currentPage="currentPage" :index="2" >
-       <index-form></index-form>
-    </ye-card-page>
+    <transition appear name="box-move-x">
+      <product-index v-if="current"></product-index>
+
+      <product-detail v-else  :is-edit='stauts' :curId="curId" :curTypeId="curTypeId"></product-detail>
+
+    </transition>
+
   </div>
 
 </template>
@@ -20,24 +20,31 @@
   import yeCardPage from '@/components/Carousel/yeCardPage';
   import productIndex from './components/productIndex'
   import eventhub from '@/eventHub/eventHub'
-  import IndexForm from './components/form/index'
+  import productDetail from './components/productDetail'
     export default {
         name: "product-layout-index",
       components:{
         'ye-card-page':yeCardPage,// 一个幻灯片切换组件
         'product-index': productIndex,
-        'index-form':IndexForm
+        'product-detail' : productDetail,
 
       },
       data(){
           return {
-            currentPage: 1,
-            curId: undefined, //当前表单的ID
+            current: true,
+            curId: '', //当前表单的ID
+            curTypeId: undefined,
+            stauts:false,
           }
       },
       created(){
-        eventhub.$on('switchCard',()=>{
-            this.currentPage = this.currentPage == 1? 2:1;
+        eventhub.$on('switchCard',(val)=>{
+            this.current = this.current ? false:true;
+            if(!this.current){
+            this.curId = val.curId;
+            this.curTypeId = val.curTypeId;
+            this.stauts = val.isEdit;
+          }
         });
 
         eventhub.$on("operatingForm",(obj)=>{

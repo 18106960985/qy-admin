@@ -11,15 +11,15 @@
 
     <!--这就是个表格不要怀疑-->
     <el-row>
-      <el-col :span="5" v-for="(o, index) in 8" :key="o"  style="margin: 5px">
+      <el-col :span="5" v-for="(value, index) in table" :key="index"  style="margin: 5px">
         <el-card :body-style="{ padding: '0px' }" shadow="hover">
-          <img src="http://element-cn.eleme.io/static/hamburger.50e4091.png" class="image">
+          <img :src="value.smallImgPath" class="image">
           <div style="padding: 14px;">
-            <span>好吃的汉堡</span>
+            <span>{{value.name}}</span>
             <div class="bottom clearfix">
-              <time class="time">11111</time>
-              <el-button type="text" class="button">删除</el-button>
-              <el-button type="text" class="button">编辑</el-button>
+              <!--<time class="time">{{value.crtTime }}</time>-->
+              <el-button type="text" class="button" @click="handleDelete(value.id)">删除</el-button>
+              <el-button type="text" class="button" @click="handleUpdate(value.id)">编辑</el-button>
             </div>
           </div>
         </el-card>
@@ -29,7 +29,7 @@
 
     <!--分页-->
     <div v-show="!loading.tableLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="tableQuery.page" :page-sizes="[10,20,30, 50]" :page-size="tableQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="tableQuery.page" :page-sizes="[9,18,27,36]" :page-size="tableQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>
     </div>
 
 
@@ -42,7 +42,7 @@
   import {page,delObj} from '@/api/app/product/detailsIndex'
   import { mapGetters } from 'vuex';
   import eventhub from '@/eventHub/eventHub'
-  // import dictValueForm from './dictValueForm';
+  import {formatTime} from '@/filters/index';
   export default {
     name: "product-details",
     components:{
@@ -57,13 +57,12 @@
     data(){
       return {
         filters:'',
-
         table:null,
         total:null,
         tableKey:0,
         tableQuery:{
           page:1,
-          limit:20,
+          limit:9,
           filters:'',
         },
         loading:{
@@ -93,17 +92,24 @@
     created(){
       this.getTable();
     },
+    filters:{
+      formatDate(){
+        if (!value) return '';
+
+        return formatTime(value ,true);
+      }
+    },
 
     methods:{
       getTable(){
         if( this.curId == -1) return;
         let fitters ='';
-        if(this.curId) fitters +="EQ_dictType.id="+this.curId+';';
+        if(this.curId) fitters +="EQ_productType.id="+this.curId+';';
         if(this.fiterls) fitters+= 'RLICK_code='+this.fiterls+';';
         this.tableQuery.filters = fitters;
-        this.loading.tableLoading = true;
+
         page(this.tableQuery).then(res=>{
-          this.loading.tableLoading = false;
+
           this.table = res.data.rows;
           this.total = res.data.total;
         });
@@ -121,22 +127,21 @@
       },
       handleCreate(){//创建
 
-        eventhub.$emit('switchCard');
+        eventhub.$emit('switchCard',{curTypeId:this.curId,curId:undefined, isEdit: false});
 
       },
 
-      handleUpdate(){
-        // this.$refs.Form.form = row;
-        eventhub.$emit('switchCard');
+      handleUpdate(id){
+        eventhub.$emit('switchCard',{curTypeId:this.curId,curId:id , isEdit: true});
       },
-      handleDelete(row){
+      handleDelete(id){
         this.$confirm('此操作将永久删除, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.loading.tableLoading = true ;
-          delObj(row.id).then(res => {
+
+          delObj(id).then(res => {
             if (res.rel){
               this.$notify({
                 title: '成功',
@@ -144,8 +149,7 @@
                 type: 'success',
                 duration: 2000
               });
-              let index = this.table.indexOf(row);
-              this.table.splice(index, 1);
+              this.getTable();
             }else{
               this.$notify({
                 title: '失败',
@@ -154,7 +158,7 @@
                 duration: 2000
               });
             }
-            this.loading.tableLoading = false ;
+
           });
         });
       }

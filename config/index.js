@@ -25,10 +25,12 @@ module.exports = {
       },
       '/media': {
         target: 'http://media.meta.com',
+        changeOrigin: true,
         pathRewrite: {
           '^/media': '/media'
         },
       }
+
     },
 
     // Various Dev Server settings
