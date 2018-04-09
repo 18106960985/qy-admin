@@ -41,6 +41,16 @@
 <script>
  import  {getForm , add , update}from '@/api/app/product/index'
 
+
+ const defaultForm = {
+   id:undefined,
+   parentId:-1,
+   parentName:"Root",
+   code:undefined,
+   name: undefined,
+   description:undefined,
+ }
+
   export default {
     name: "product-type-form",
     props:{
@@ -68,14 +78,7 @@
 
     data(){
       return {
-        typeForm:{
-          id:undefined,
-          parentId:-1,
-          parentName:"Root",
-          code:undefined,
-          name: undefined,
-          description:undefined,
-        },
+        typeForm:Object.assign({}, defaultForm),
         loading:{
           formLoading: false,
           submitLoading: false,
@@ -178,7 +181,7 @@
 
       },
       resetForm(){
-        this.$refs['typeForm'].resetFields();
+      this.typeForm = Object.assign({}, defaultForm);
       },
       closeEven(){
         // this.resetForm();

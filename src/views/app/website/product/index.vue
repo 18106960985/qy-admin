@@ -3,14 +3,14 @@
 <template>
   <div>
 
-
      <!--第一页功能页-->
-    <transition appear name="box-move-x">
-      <product-index v-if="current"></product-index>
+    <transition-group appear name="box-move-x" mode="out-in">
+      <product-index v-show="current" :key="0"></product-index>
 
-      <product-detail v-else  :is-edit='stauts' :curId="curId" :curTypeId="curTypeId"></product-detail>
+      <product-detail v-if="!current" :is-edit='stauts' :curId="curId" :curTypeId="curTypeId" :key="1"></product-detail>
 
-    </transition>
+    </transition-group>
+
 
   </div>
 
@@ -40,11 +40,11 @@
       created(){
         eventhub.$on('switchCard',(val)=>{
             this.current = this.current ? false:true;
-            if(!this.current){
-            this.curId = val.curId;
-            this.curTypeId = val.curTypeId;
-            this.stauts = val.isEdit;
-          }
+            if(val){
+              this.curId = val.curId;
+              this.curTypeId = val.curTypeId;
+              this.stauts = val.isEdit;
+            }
         });
 
         eventhub.$on("operatingForm",(obj)=>{

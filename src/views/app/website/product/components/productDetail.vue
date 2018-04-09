@@ -166,6 +166,8 @@
       resultMsg(res){
         this.loading = false;
         if (res.rel){
+         this.cancel();
+          eventhub.$emit('getTable');
           this.$notify({
             title: '成功',
             message: '创建成功',

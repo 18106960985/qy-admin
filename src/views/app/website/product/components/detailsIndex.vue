@@ -91,6 +91,9 @@
     },
     created(){
       this.getTable();
+      eventhub.$on('getTable',()=>{
+        this.getTable();
+      })
     },
     filters:{
       formatDate(){
