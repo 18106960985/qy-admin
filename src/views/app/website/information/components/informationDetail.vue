@@ -56,7 +56,7 @@
 
                 <el-col :span="6">
                   <el-form-item label-width="80px" label="发布时间:" class="postInfo-container-item">
-                    <el-date-picker v-model="postForm.display_time" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间">
+                    <el-date-picker v-model="postForm.displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间">
                     </el-date-picker>
                   </el-form-item>
                 </el-col>

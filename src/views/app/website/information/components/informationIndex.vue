@@ -45,7 +45,7 @@
       </el-table-column>
       <el-table-column width="150px" align="center" :label="$t('table.date')">
         <template slot-scope="scope">
-          <span>{{scope.row.displayTime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+          <span>{{scope.row.displayTime | parseTime('{y}-{m}-{d}')}}</span>
         </template>
       </el-table-column>
 
@@ -80,7 +80,7 @@
 
       <el-table-column v-if="show.updTime" width="150px"  align="center" label="最后时间">
         <template slot-scope="scope">
-          <span>{{scope.row.updTime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+          <span>{{scope.row.updTime}}</span>
         </template>
       </el-table-column>
       <el-table-column v-if="show.updName" width="150px" align="center" label="最后更新人">
@@ -181,8 +181,10 @@
       ])
     },
     created() {
-      this.gettable();
-
+      this.getTable();
+      eventhub.$on('getTable',()=>{
+        this.getTable();
+      })
 
     },
     filters: {
@@ -212,7 +214,7 @@
         this.listQuery.filters=filters;
       },
       //获取表格
-      gettable() {
+      getTable() {
         this.loading.istLoading = true;
         this.searchForParams();
         page(this.listQuery)
@@ -224,18 +226,18 @@
       },
       handleSizeChange(val){
         this.listQuery.limit = val;
-        this.gettable();
+        this.getTable();
       },
       handleCurrentChange(val) {
         this.listQuery.page = val;
-        this.gettable();
+        this.getTable();
       },
       handleFilter(){
-        this.gettable();
+        this.getTable();
       },
       //新增
       handleCreate(){
-        eventhub.$emit('switchCard')
+        eventhub.$emit('switchCard',{curId:undefined, isEdit:false})
       },
       //编辑
       handleUpdate(row){
@@ -268,6 +270,7 @@
         ModifyStatus(row.id,{status:status}).then(res=>{
           if(res.rel){
             this.$message.success("操作成功");
+            this.getTable();
           }
         })
       },
