@@ -3,13 +3,13 @@
   <div class="app-container calendar-list-container">
     <!--搜索工具栏-->
     <div class="filter-container">
-      <el-input v-model="filters" @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="字段编码" />
+      <el-input v-model="filters" @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="产品名称" />
         <el-button class="filter-item" type="primary"  icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>
         <el-button v-if="authority.dictManager_btn_element_add &&  curId != -1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('table.add')}}</el-button>
 
     </div>
 
-    <!--这就是个表格不要怀疑-->
+
     <el-row>
       <el-col :span="5" v-for="(value, index) in table" :key="index"  style="margin: 5px">
         <el-card :body-style="{ padding: '0px' }" shadow="hover">
@@ -29,7 +29,7 @@
 
     <!--分页-->
     <div v-show="!loading.tableLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="tableQuery.page" :page-sizes="[9,18,27,36]" :page-size="tableQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="tableQuery.page" :page-sizes="[10,20,30,50]" :page-size="tableQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>
     </div>
 
 
@@ -62,7 +62,7 @@
         tableKey:0,
         tableQuery:{
           page:1,
-          limit:9,
+          limit:10,
           filters:'',
         },
         loading:{
@@ -108,7 +108,7 @@
         if( this.curId == -1) return;
         let fitters ='';
         if(this.curId) fitters +="EQ_productType.id="+this.curId+';';
-        if(this.fiterls) fitters+= 'RLICK_code='+this.fiterls+';';
+        if(this.fiterls) fitters+= 'RLICK_name='+this.fiterls+';';
         this.tableQuery.filters = fitters;
 
         page(this.tableQuery).then(res=>{
@@ -189,6 +189,7 @@
 
   .image {
     width: 100%;
+    height: 200px;
     display: block;
   }
 
