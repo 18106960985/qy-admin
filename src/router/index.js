@@ -117,12 +117,12 @@ export const asyncRouterMap = [
       icon: 'form'
     },
     children: [
-      { path: 'websiteIndex',
-        component: _import('app/website/information/index'),
-        authority: 'websiteIndex',
-        name: '首页管理',
-        meta: { title: 'createForm', icon: 'table'
-        }},
+      // { path: 'websiteIndex',
+      //   component: _import('app/website/information/index'),
+      //   authority: 'websiteIndex',
+      //   name: '首页管理',
+      //   meta: { title: 'createForm', icon: 'table'
+      //   }},
       { path: 'productMangement',
         component: _import('app/website/product/index'),
         authority: 'productMangement',
@@ -130,7 +130,7 @@ export const asyncRouterMap = [
         meta: { title: 'createForm', icon: 'table'
         }},
       { path: 'InformationMangement',
-        component: _import('app/website/information/complexTable'),
+        component: _import('app/website/information/index'),
         authority: 'InformationMangement',
         name: '资讯管理',
         meta: { title: 'createForm', icon: 'table'

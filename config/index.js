@@ -29,6 +29,13 @@ module.exports = {
         pathRewrite: {
           '^/media': '/media'
         },
+      },
+      '/official': {
+        target: 'http://download.meta.com',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/official': '/official'
+        },
       }
 
     },

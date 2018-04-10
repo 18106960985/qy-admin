@@ -28,17 +28,17 @@
 
     <el-table :key='tableKey' :data="list" v-loading="loading.listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
               style="width: 100%">
-      <el-table-column align="center" :label="$t('table.id')" width="65">
-        <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
+      <el-table-column align="center" :label="$t('table.id')" width="65"   type="index">
+        <!--<template slot-scope="scope">-->
+          <!--<span>{{scope.row.id}}</span>-->
+        <!--</template>-->
       </el-table-column>
       <el-table-column width="150px" align="center" :label="$t('table.author')">
         <template slot-scope="scope">
           <span>{{scope.row.author}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150px" align="center" :label="$t('table.author')">
+      <el-table-column width="150px" align="center" :label="$t('table.source')">
         <template slot-scope="scope">
           <span>{{scope.row.sourceName}}</span>
         </template>
@@ -172,6 +172,9 @@
         },
         statusOptions: ['published', 'draft', 'deleted'],
         recommendLV: [1, 2, 3,4],//推荐级别
+        temp:{
+          status: undefined,
+        },
 
       }
     },
@@ -206,7 +209,7 @@
           filters += "RLIKE_title="+this.search.title+";";
         }
         if(this.search.recommendLV){
-          filters += "EQ_search="+this.search.recommendLV+";";
+          filters += "EQ_recommendLV="+this.search.recommendLV+";";
         }
         if(this.search.status){
           filters += "EQ_status="+this.search.status+";";
@@ -267,12 +270,19 @@
       },
 
       handleModifyStatus(row, status) {
-        ModifyStatus(row.id,{status:status}).then(res=>{
-          if(res.rel){
-            this.$message.success("操作成功");
-            this.getTable();
-          }
+        this.$notify({
+          title:'警告',
+          type:'warning',
+          message:'功能改功能存在问题待修改',
+          duration:2000,
         })
+      // this.temp.status = status;
+      //   ModifyStatus(row.id, this.temp).then(res=>{
+      //     if(res.rel){
+      //       this.$message.success("操作成功");
+      //       this.getTable();
+      //     }
+      //   })
       },
       handleDownload() {
 

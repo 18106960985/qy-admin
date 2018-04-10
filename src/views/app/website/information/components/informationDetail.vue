@@ -80,7 +80,7 @@
         </el-form-item>
 
         <div class="editor-container">
-          <tinymce :height=400 ref="editor" v-model="postForm.details"></tinymce>
+          <tinymce :height=400 ref="editor" v-model="postForm.detail"></tinymce>
         </div>
 
 
@@ -99,6 +99,8 @@
   import 'vue-multiselect/dist/vue-multiselect.min.css'
   import Sticky from '@/components/Sticky'
 
+
+
   import {getObj,addObj , putObj} from '@/api/app/information/index'
 
 
@@ -108,7 +110,7 @@
     title: '', //  产品名称
     imgPath: '', // 产品图片
     introduce:'',//产品介绍
-    details:'', //产品详情
+    detail:'', //产品详情
     author:'', //作者
     sourceName:'',//文章来源
     recommendLV:0,

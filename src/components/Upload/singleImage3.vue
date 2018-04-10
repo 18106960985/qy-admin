@@ -1,3 +1,4 @@
+<!--图片上传组件封装-->
 <template>
   <div class="upload-container">
     <el-upload class="image-uploader" :data="dataObj" drag :multiple="false" :show-file-list="false" action="/media/upload"
@@ -25,6 +26,8 @@
 </template>
 
 <script>
+
+
   import { getToken } from '@/api/qiniu'
 
   export default {
@@ -39,12 +42,13 @@
     computed: {
       imageUrl() {
         return this.value
-      }
+      },
+
     },
     data() {
       return {
         tempUrl: '',
-        dataObj: { org: '/official' },
+        dataObj: { org: '/official' },//公司上传地址组织名
       }
     },
     methods: {
@@ -55,7 +59,7 @@
         this.$emit('input', val)
       },
       handleImageScucess(file) {
-        this.emitInput("http://download.meta.com/"+file.data.path)
+        this.emitInput(file.data.path)
       },
       beforeUpload() {
         // const _self = this

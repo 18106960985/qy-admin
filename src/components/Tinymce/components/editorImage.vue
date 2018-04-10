@@ -15,6 +15,7 @@
 
 <script>
 // import { getToken } from 'api/qiniu'
+import {IMG_PATH} from '@/utils/lib/CommonConstant' //公网访问IP 也可以选择在 config里面配置  富文本框的条件特殊 所以是写死的
 
 export default {
   name: 'editorSlideUpload',
@@ -53,7 +54,7 @@ export default {
       const objKeyArr = Object.keys(this.listObj)
       for (let i = 0, len = objKeyArr.length; i < len; i++) {
         if (this.listObj[objKeyArr[i]].uid === uid) {
-          this.listObj[objKeyArr[i]].url = "http://download.meta.com/"+response.data.path;
+          this.listObj[objKeyArr[i]].url = IMG_PATH + response.data.path;
           this.listObj[objKeyArr[i]].hasSuccess = true;
           return
         }
