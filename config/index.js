@@ -24,14 +24,14 @@ module.exports = {
           },
       },
       '/media': {
-        target: 'http://media.meta.com',
+        target: 'http://test-media.meta.net.cn',
         changeOrigin: true,
         pathRewrite: {
           '^/media': '/media'
         },
       },
       '/official': {
-        target: 'http://download.meta.com',
+        target: 'http://test-download.meta.net.cn',
         changeOrigin: true,
         pathRewrite: {
           '^/official': '/official'
