@@ -1,8 +1,8 @@
 {
-  "name": "vue-element-admin",
-  "version": "3.6.2",
-  "description": "A magical vue admin. Typical templates for enterprise applications. Newest development stack of vue. Lots of awesome features",
-  "author": "Pan <panfree23@gmail.com>",
+  "name": "qy-admin",
+  "version": "1.1.0",
+  "description": "天道酬勤",
+  "author": "qiyue <747718944@qq.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
