@@ -13,7 +13,7 @@
     <el-row>
       <el-col :span="5" v-for="(value, index) in table" :key="index"  style="margin: 5px">
         <el-card :body-style="{ padding: '0px' }" shadow="hover">
-          <img :src="value.smallImgPath" class="image">
+          <img :src="DOWNLOAD_PATH + value.smallImgPath" class="image">
           <div style="padding: 14px;">
             <span>{{value.name}}</span>
             <div class="bottom clearfix">
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+  import {DOWNLOAD_PATH} from '@/utils/lib/CommonConstant';
+
   import {page,delObj} from '@/api/app/product/detailsIndex'
   import { mapGetters } from 'vuex';
   import eventhub from '@/eventHub/eventHub'
@@ -56,6 +58,7 @@
     },
     data(){
       return {
+        DOWNLOAD_PATH:DOWNLOAD_PATH,
         filters:'',
         table:null,
         total:null,

@@ -3,7 +3,7 @@
     <el-button icon='el-icon-upload' size="mini" :style="{background:color,borderColor:color}" @click=" dialogVisible=true" type="primary">上传图片
     </el-button>
     <el-dialog :visible.sync="dialogVisible">
-      <el-upload class="editor-slide-upload" action="/media/upload" :multiple="true" :file-list="fileList" :data="dataObj" :show-file-list="true"
+      <el-upload class="editor-slide-upload" :action="UPLOAD_PATH" :multiple="true" :file-list="fileList" :data="dataObj" :show-file-list="true"
         list-type="picture-card" :on-remove="handleRemove" :on-success="handleSuccess" :before-upload="beforeUpload">
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
@@ -15,7 +15,7 @@
 
 <script>
 // import { getToken } from 'api/qiniu'
-import {IMG_PATH} from '@/utils/lib/CommonConstant' //公网访问IP 也可以选择在 config里面配置  富文本框的条件特殊 所以是写死的
+import {UPLOAD_PATH,DOWNLOAD_PATH} from '@/utils/lib/CommonConstant' //公网访问IP 也可以选择在 config里面配置  富文本框的条件特殊 所以是写死的
 
 export default {
   name: 'editorSlideUpload',
@@ -31,6 +31,7 @@ export default {
       listObj: {},
       fileList: [],
       dataObj: { org: '/official' },
+      UPLOAD_PATH:UPLOAD_PATH,
     }
   },
   methods: {
@@ -54,7 +55,7 @@ export default {
       const objKeyArr = Object.keys(this.listObj)
       for (let i = 0, len = objKeyArr.length; i < len; i++) {
         if (this.listObj[objKeyArr[i]].uid === uid) {
-          this.listObj[objKeyArr[i]].url =  response.data.path;
+          this.listObj[objKeyArr[i]].url =  DOWNLOAD_PATH + response.data.path;
           this.listObj[objKeyArr[i]].hasSuccess = true;
           return
         }
