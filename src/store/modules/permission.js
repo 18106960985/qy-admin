@@ -33,7 +33,7 @@ function filterAsyncRouter(asyncRouterMap, menus, menuDatas) {
 
         route.meta.title = menuDatas[route.authority].title;
         // route.meta.icon = menuDatas[route.authority].icon;
-        route.meta.icon = 'documentation';
+        route.meta.icon = menuDatas[route.authority].icon;
       }
       if (route.children && route.children.length) {
         route.children = filterAsyncRouter(route.children, menus, menuDatas);

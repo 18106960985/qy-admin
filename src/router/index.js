@@ -49,17 +49,17 @@ export const constantRouterMap = [
       meta:{ title:'dashboard', icon: 'dashboard', onChange:true}
     }]
   },
-  {
-    path: '/documentation',
-    component: Layout,
-    redirect: '/documentation/index',
-    children: [{
-      path: 'index',
-      component: _import('documentation/index'),
-      name: 'documentation',
-      meta: { title: 'documentation', icon: 'documentation', noCache: true }
-    }]
-  }
+  // {
+  //   path: '/documentation',
+  //   component: Layout,
+  //   redirect: '/documentation/index',
+  //   children: [{
+  //     path: 'index',
+  //     component: _import('documentation/index'),
+  //     name: 'documentation',
+  //     meta: { title: 'documentation', icon: 'documentation', noCache: true }
+  //   }]
+  // }
 ]
 
 export default new Router({
