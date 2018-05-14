@@ -87,15 +87,15 @@
         </el-form-item>
         <el-form-item label="描述">
           <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 5}" placeholder="请输入内容" v-model="userForm.description"> </el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel('userForm')">取 消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="create('userForm')">确 定</el-button>
-        <el-button v-else type="primary" @click="update('userForm')">确 定</el-button>
-      </div>
-    </el-dialog>
-  </div>
+</el-form-item>
+</el-form>
+<div slot="footer" class="dialog-footer">
+  <el-button @click="cancel('userForm')">取 消</el-button>
+  <el-button v-if="dialogStatus=='create'" type="primary" @click="create('userForm')">确 定</el-button>
+  <el-button v-else type="primary" @click="update('userForm')">确 定</el-button>
+</div>
+</el-dialog>
+</div>
 </template>
 
 <script>
